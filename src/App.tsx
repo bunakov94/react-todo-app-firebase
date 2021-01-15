@@ -6,12 +6,14 @@ import TaskList from './components/blocks/TaskList';
 import './App.scss';
 import Header from './components/layout/Header';
 import Footer from './components/layout/Footer';
+import FilterTypes from './components/types/filterTypes';
 
 export default class App extends Component<AppProps, AppState> {
   constructor(props: AppProps) {
     super(props);
     this.state = {
       tasks: [],
+      filter: FilterTypes.ALL,
     };
   }
 
@@ -31,15 +33,58 @@ export default class App extends Component<AppProps, AppState> {
       });
   }
 
-  render() {
+  editTask = (id: string) => {
+    this.setState(({ tasks: oldTasks }) => {
+      const tasks = [...oldTasks];
+      const taskIndex = tasks.findIndex((task) => task.id === id);
+      tasks[taskIndex].isEditing = true;
+      return { tasks };
+    });
+  };
+
+  deleteCompletedTasks = () => {
     const { tasks } = this.state;
+    tasks
+      .filter((task) => task.isCompleted)
+      .reduce((acc: string[], el: ITask) => {
+        acc.push(el.id);
+        return acc;
+      }, [])
+      .forEach((element: string) => {
+        firebase.firestore().collection('tasks').doc(element).delete();
+      });
+  };
+
+  changeFilter = (filter: number) => {
+    this.setState({ filter });
+  };
+
+  filterTasks = (tasks: ITask[], filter: number) => {
+    if (filter === FilterTypes.UNCOMPLETED) {
+      return tasks.filter((item) => !item.isCompleted);
+    }
+    if (filter === FilterTypes.COMPLETED) {
+      return tasks.filter((item) => item.isCompleted);
+    }
+    return tasks;
+  };
+
+  render() {
+    const { tasks, filter } = this.state;
+    const tasksLeft = tasks.reduce((acc, el) => (el.isCompleted ? acc : acc + 1), 0);
+    const filteredTasks = this.filterTasks(tasks, filter);
 
     return (
       <section className="todoapp">
         <Header />
         <section className="main">
-          <TaskList tasks={tasks} />
-          <Footer />
+          <TaskList tasks={filteredTasks} editTask={this.editTask} />
+          <Footer
+            deleteCompletedTasks={this.deleteCompletedTasks}
+            tasksLeft={tasksLeft}
+            filter={filter}
+            changeFilter={this.changeFilter}
+          />
         </section>
       </section>
     );
