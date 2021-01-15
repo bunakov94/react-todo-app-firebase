@@ -1,6 +1,6 @@
 import React from 'react';
 import classNames from 'classnames';
-import Task from '../Task';
+import Task from '../../blocks/Task';
 import { ITask, TaskListProps } from '../../types/interfaces';
 import './TaskList.scss';
 

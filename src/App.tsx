@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import firebase from './firebase';
 import { AppState, AppProps, ITask } from './components/types/interfaces';
 
-import TaskList from './components/blocks/TaskList';
+import TaskList from './components/layout/TaskList';
 import './App.scss';
 import Header from './components/layout/Header';
 import Footer from './components/layout/Footer';
