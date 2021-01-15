@@ -1,28 +1,10 @@
 import React, { useState } from 'react';
-import firebase from '../../../firebase';
+import { toggleComplete, deleteTask, updateTodo } from '../../helpers/MethodLibery';
 import { TaskProps } from '../../types/interfaces';
 import './Task.scss';
 
 const Task = ({ text, id, isCompleted, editTask }: TaskProps) => {
-  const toggleComplete = (event: React.ChangeEvent<HTMLInputElement>) => {
-    event.preventDefault();
-    firebase.firestore().collection('tasks').doc(id).update({
-      isCompleted: !isCompleted,
-    });
-  };
   const onEditTask = () => editTask(id);
-  const deleteTask = () => {
-    firebase.firestore().collection('tasks').doc(id).delete();
-  };
-
-  const updateTodo = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    firebase.firestore().collection('tasks').doc(id).update({
-      isEditing: false,
-      text: event.currentTarget.editText.value,
-    });
-  };
-
   const [editText, setEditText] = useState(text);
 
   return (
@@ -33,7 +15,7 @@ const Task = ({ text, id, isCompleted, editTask }: TaskProps) => {
           type="checkbox"
           name="toogle-checkbox"
           checked={isCompleted}
-          onChange={toggleComplete}
+          onChange={(event) => toggleComplete(event, isCompleted, id)}
         />
         <label htmlFor="toogle-checkbox">
           <span className="title">{text}</span>
@@ -45,9 +27,9 @@ const Task = ({ text, id, isCompleted, editTask }: TaskProps) => {
           <span className="description">created 17 seconds ago</span>
         </label>
         <button type="button" aria-label="edit" className="icon icon-edit" onClick={onEditTask} />
-        <button type="button" aria-label="delete" className="icon icon-destroy" onClick={deleteTask} />
+        <button type="button" aria-label="delete" className="icon icon-destroy" onClick={() => deleteTask(id)} />
       </div>
-      <form onSubmit={updateTodo}>
+      <form onSubmit={(event) => updateTodo(event, id, event.currentTarget.editText.value)}>
         <input
           type="text"
           className="edit"

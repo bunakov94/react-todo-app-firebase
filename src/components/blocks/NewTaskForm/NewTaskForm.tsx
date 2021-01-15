@@ -1,31 +1,13 @@
 import React, { useState } from 'react';
-import firebase from '../../../firebase';
+import { addTask } from '../../helpers/MethodLibery';
 
 const NewTaskForm = () => {
   const [textInput, setTextInput] = useState('');
   const [minInput, setMinInput] = useState('');
   const [secInput, setSecInput] = useState('');
-  // TODO: Event type?
-  const addTask = (event: any) => {
-    event.preventDefault();
-    if (textInput !== '') {
-      firebase
-        .firestore()
-        .collection('tasks')
-        .add({
-          text: textInput,
-          min: minInput || 0,
-          sec: secInput || 0,
-          isCompleted: false,
-          isEditing: false,
-          timeOfCreation: new Date(),
-        });
-      event.target.reset();
-    }
-  };
 
   return (
-    <form className="new-todo-form" onSubmit={addTask}>
+    <form className="new-todo-form" onSubmit={(event) => addTask(event, textInput, minInput, secInput)}>
       <input
         name="text"
         className="new-todo"
