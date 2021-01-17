@@ -1,19 +1,17 @@
 import firebase from '../../firebase';
 // TODO: Event type?
-export const addTask = (event: any, textInput: string, minInput: string, secInput: string) => {
+export const addTask = (event: any, textInput: string, timerValue: number) => {
   event.preventDefault();
   if (textInput !== '') {
-    firebase
-      .firestore()
-      .collection('tasks')
-      .add({
-        text: textInput,
-        min: minInput || 0,
-        sec: secInput || 0,
-        isCompleted: false,
-        isEditing: false,
-        timeOfCreation: new Date(),
-      });
+    firebase.firestore().collection('tasks').add({
+      text: textInput,
+      timerValue,
+      isCompleted: false,
+      isEditing: false,
+      timeOfCreation: new Date(),
+      timerIsActive: false,
+      startTime: 0,
+    });
     event.target.reset();
   }
 };

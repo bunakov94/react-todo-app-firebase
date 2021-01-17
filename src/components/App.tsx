@@ -35,6 +35,9 @@ export default class App extends Component<AppProps, AppState> {
             timeOfCreation: data.timeOfCreation.toDate(),
             isCompleted: data.isCompleted,
             isEditing: data.isEditing,
+            timerValue: data.timerValue,
+            startTime: data.startTime,
+            timerIsActive: data.timerIsActive,
           } as ITask;
         });
         this.setState({ tasks });

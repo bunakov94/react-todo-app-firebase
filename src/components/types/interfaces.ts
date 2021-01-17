@@ -10,8 +10,9 @@ export interface ITask {
   text: string;
   timeOfCreation: Date;
   id: string;
-  min: string;
-  sec: string;
+  timerValue: number;
+  startTime: Date;
+  timerIsActive: boolean;
 }
 
 export type TaskProps = {
@@ -20,6 +21,9 @@ export type TaskProps = {
   id: string;
   isCompleted: boolean;
   timeOfCreation: Date;
+  timerValue: number;
+  startTime: Date;
+  timerIsActive: boolean;
 };
 
 export type TaskFilterProps = {

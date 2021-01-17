@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { formatDistanceToNow } from 'date-fns';
+import firebase from '../../../firebase';
+
 import { toggleComplete, deleteTask, updateTodo } from '../../helpers/MethodLibery';
 import { TaskProps } from '../../types/interfaces';
 import './Task.scss';
 
-const Task = ({ text, id, isCompleted, editTask, timeOfCreation }: TaskProps) => {
+const Task = ({ text, id, isCompleted, editTask, timeOfCreation, timerValue, timerIsActive, startTime }: TaskProps) => {
   const onEditTask = () => editTask(id);
   const [editText, setEditText] = useState(text);
+  const [label, setLabel] = useState(timerValue);
 
   const [distanceToNow, setDistanceToNow] = useState(
     formatDistanceToNow(timeOfCreation, { addSuffix: true, includeSeconds: true }),
@@ -24,10 +27,37 @@ const Task = ({ text, id, isCompleted, editTask, timeOfCreation }: TaskProps) =>
     return () => clearInterval(timerID);
   });
 
-  // console.log(
-  //   new Date(+new Date() - +timeOfCreation).getMinutes(),
-  //   new Date(+new Date() - +timeOfCreation).getSeconds(),
-  // );
+  const onTickTimer = () => {
+    if (!timerIsActive) {
+      return;
+    }
+    setLabel(Date.now() - +startTime + timerValue);
+  };
+
+  useEffect(() => {
+    let interval: any;
+    if (timerIsActive) {
+      interval = setInterval(() => {
+        onTickTimer();
+      }, 1000);
+    }
+
+    return () => clearTimeout(interval);
+  });
+
+  const onStart = () => {
+    firebase.firestore().collection('tasks').doc(id).update({
+      timerIsActive: true,
+      startTime: Date.now(),
+    });
+  };
+
+  const onStop = () => {
+    firebase.firestore().collection('tasks').doc(id).update({
+      timerValue: label,
+      timerIsActive: false,
+    });
+  };
 
   return (
     <>
@@ -42,9 +72,9 @@ const Task = ({ text, id, isCompleted, editTask, timeOfCreation }: TaskProps) =>
         <label htmlFor="toogle-checkbox">
           <span className="title">{text}</span>
           <span className="description">
-            <button type="button" aria-label="play" className="icon icon-play" />
-            <button type="button" aria-label="pause" className="icon icon-pause" />
-            12:25
+            <button type="button" aria-label="play" className="icon icon-play" onClick={() => onStart()} />
+            <button type="button" aria-label="pause" className="icon icon-pause" onClick={() => onStop()} />
+            <p>{`${new Date(label).getMinutes()}:${new Date(label).getSeconds()}`}</p>
           </span>
           <span className="description">{distanceToNow}</span>
         </label>
