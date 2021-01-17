@@ -34,6 +34,5 @@ export const updateTodo = (event: React.FormEvent<HTMLFormElement>, id: string, 
   firebase.firestore().collection('tasks').doc(id).update({
     isEditing: false,
     text,
-    // text: event.currentTarget.editText.value,
   });
 };

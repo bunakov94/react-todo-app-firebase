@@ -19,6 +19,7 @@ export type TaskProps = {
   text: string;
   id: string;
   isCompleted: boolean;
+  timeOfCreation: Date;
 };
 
 export type TaskFilterProps = {

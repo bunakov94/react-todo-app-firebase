@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import firebase from './firebase';
+// import { formatDistanceToNow } from 'date-fns';
 import { AppState, AppProps, ITask } from './components/types/interfaces';
 
 import TaskList from './components/layout/TaskList';
@@ -9,6 +10,8 @@ import Footer from './components/layout/Footer';
 import FilterTypes from './components/types/filterTypes';
 
 export default class App extends Component<AppProps, AppState> {
+  timerID?: number;
+
   constructor(props: AppProps) {
     super(props);
     this.state = {
@@ -22,13 +25,18 @@ export default class App extends Component<AppProps, AppState> {
       .firestore()
       .collection('tasks')
       .onSnapshot((snapshot) => {
-        const tasks = snapshot.docs.map(
-          (doc) =>
-            ({
-              id: doc.id,
-              ...doc.data(),
-            } as ITask),
-        );
+        const tasks = snapshot.docs.map((doc) => {
+          const data = doc.data();
+          // formatDistanceToNow(data.timeOfCreation.toDate(), { addSuffix: true, includeSeconds: true });
+          // const timeOfCreation = data.timeOfCreation !== '' ? data.timeOfCreation.toDate() : '';
+          return {
+            id: doc.id,
+            text: data.text,
+            timeOfCreation: data.timeOfCreation.toDate(),
+            isCompleted: data.isCompleted,
+            isEditing: data.isEditing,
+          } as ITask;
+        });
         this.setState({ tasks });
       });
   }
