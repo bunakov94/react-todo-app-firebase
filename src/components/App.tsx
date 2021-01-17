@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
-import firebase from './firebase';
+import firebase from '../firebase';
 // import { formatDistanceToNow } from 'date-fns';
-import { AppState, AppProps, ITask } from './components/types/interfaces';
+import { AppState, AppProps, ITask } from './types/interfaces';
 
-import TaskList from './components/layout/TaskList';
+import TaskList from './layout/TaskList';
 import './App.scss';
-import Header from './components/layout/Header';
-import Footer from './components/layout/Footer';
-import FilterTypes from './components/types/filterTypes';
+import Header from './layout/Header';
+import Footer from './layout/Footer';
+import FilterTypes from './types/filterTypes';
 
 export default class App extends Component<AppProps, AppState> {
   timerID?: number;
