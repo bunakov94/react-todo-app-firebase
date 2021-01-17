@@ -1,6 +1,7 @@
 export type AppState = {
   tasks: ITask[];
   filter: number;
+  isLoading: boolean;
 };
 export type AppProps = {};
 
@@ -34,6 +35,7 @@ export type TaskFilterProps = {
 export type TaskListProps = {
   tasks: ITask[];
   editTask: (id: string) => void;
+  isLoading: boolean;
 };
 
 export type FooterProps = {

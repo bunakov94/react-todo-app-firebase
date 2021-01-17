@@ -1,5 +1,5 @@
 import firebase from '../../firebase';
-// TODO: Event type?
+
 export const addTask = (event: any, textInput: string, timerValue: number) => {
   event.preventDefault();
   if (textInput !== '') {
@@ -32,5 +32,19 @@ export const updateTodo = (event: React.FormEvent<HTMLFormElement>, id: string, 
   firebase.firestore().collection('tasks').doc(id).update({
     isEditing: false,
     text,
+  });
+};
+
+export const onStart = (id: string) => {
+  firebase.firestore().collection('tasks').doc(id).update({
+    timerIsActive: true,
+    startTime: Date.now(),
+  });
+};
+
+export const onStop = (id: string, label: number) => {
+  firebase.firestore().collection('tasks').doc(id).update({
+    timerValue: label,
+    timerIsActive: false,
   });
 };

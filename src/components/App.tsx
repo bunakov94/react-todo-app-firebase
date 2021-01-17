@@ -17,6 +17,7 @@ export default class App extends Component<AppProps, AppState> {
     this.state = {
       tasks: [],
       filter: FilterTypes.ALL,
+      isLoading: true,
     };
   }
 
@@ -27,8 +28,6 @@ export default class App extends Component<AppProps, AppState> {
       .onSnapshot((snapshot) => {
         const tasks = snapshot.docs.map((doc) => {
           const data = doc.data();
-          // formatDistanceToNow(data.timeOfCreation.toDate(), { addSuffix: true, includeSeconds: true });
-          // const timeOfCreation = data.timeOfCreation !== '' ? data.timeOfCreation.toDate() : '';
           return {
             id: doc.id,
             text: data.text,
@@ -41,6 +40,7 @@ export default class App extends Component<AppProps, AppState> {
           } as ITask;
         });
         this.setState({ tasks });
+        this.setState({ isLoading: false });
       });
   }
 
@@ -81,15 +81,17 @@ export default class App extends Component<AppProps, AppState> {
   };
 
   render() {
-    const { tasks, filter } = this.state;
+    const { tasks, filter, isLoading } = this.state;
     const tasksLeft = tasks.reduce((acc, el) => (el.isCompleted ? acc : acc + 1), 0);
-    const filteredTasks = this.filterTasks(tasks, filter);
+    const filteredTasks = this.filterTasks(tasks, filter).sort(
+      (first, second) => +second.timeOfCreation - +first.timeOfCreation,
+    );
 
     return (
       <section className="todoapp">
         <Header />
         <section className="main">
-          <TaskList tasks={filteredTasks} editTask={this.editTask} />
+          <TaskList tasks={filteredTasks} editTask={this.editTask} isLoading={isLoading} />
           <Footer
             deleteCompletedTasks={this.deleteCompletedTasks}
             tasksLeft={tasksLeft}

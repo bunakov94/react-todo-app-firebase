@@ -241,6 +241,8 @@ body {
 .todo-list li label .description {
   font-size: 13px;
   color: gray;
+  display: flex;
+  align-items: center;
 }
 
 .todo-list li label .title {
@@ -258,13 +260,12 @@ body {
 }
 
 .todo-list li .icon {
-  width: 30px;
-  height: 40px;
   font-size: 34px;
   color: #cc9a9a;
   margin: auto 0;
   transition: color 0.2s ease-out;
   cursor: pointer;
+  margin: 0;
 }
 
 .todo-list li .icon:hover {
@@ -296,13 +297,8 @@ body {
 
 .todo-list li .icon-pause,
 .todo-list li .icon-play {
-  font-size: 18px;
-  width: 18px;
-  height: 18px;
-}
-
-.todo-list li .icon-play {
-  font-size: 15px;
+  font-size: 20px;
+  margin-right: 10px;
 }
 
 .icon-pause:after {
@@ -445,5 +441,22 @@ html .clear-completed:active {
 
   .filters {
     bottom: 10px;
+  }
+}
+
+.label {
+  margin: 0;
+  font-size: 16px;
+}
+
+.nothing {
+  margin: 0;
+  line-height: 2;
+  text-align: center;
+  color: #4d4d4d;
+
+  @media (max-width: 480px) {
+    font-size: 20px;
+    margin: 20px 0;
   }
 }
